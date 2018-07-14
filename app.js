@@ -9,9 +9,9 @@ const myCache = new NodeCache();
 
 
 const googleAuth = new OAuth2(
-  '235823170428-he0p8ultkvaupgoehvmoss1l97hko78v.apps.googleusercontent.com',
-  'FZmBuJmaEnBT3IF299Ndgwy2',
-  'http://localhost:3007/connect/callback'
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.DOMAIN + '/connect/callback',
 )
 
 const GOOGLE_SCOPE = [
