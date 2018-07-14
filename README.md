@@ -1,85 +1,27 @@
-# gt-local-calendar-sync
-A simple calendar syncing system that keeps a local cache of calendar events that sync to Google Calendar API.
-
-Devise and implement a simple cache system that allows an endpoint that serves a list of calendar events from a logged in user's Google calendar while limiting the number of API hits to Google Calendar by holding a local cache of events.
-
-## Guidelines
-1. The cache can be built in any way you see fit as long as it persistants beyond server restarts.
-2. Response of GET request should return JSON
-
-## Requirements
-The server should respond to the following request via JSON in the format of the sample output below
-
-### GET /calendar-events
-* If the user is not logged in, redirect to login page for Google Calendar to authorize user. After auth, redirect to /calendar-events endpoint
-* Show a list of upcoming calendar events with event data:
-  * Event Title
-  * Event Description
-  * List of Attendees (with attendance reponse)
-
-#### GET Params
-| Params  | Required | Description |
-| ------- | -------- | ----------- |
-| startDate | false  | ISO date format string. If present, bounds all events returned by the query to have a starting event datetime >= to value. (i.e. '2017-01-17T03:36:22.321Z') |
-| endDate   | false  | ISO date format string. If present, bounds all events returned by the query to have a starting event datetime <= to value. (i.e. '2017-01-17T03:36:22.321Z') |
-
-#### Sample Output
-```javascript
+Instructions:
+- npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), and nodemon (https://www.npmjs.com/package/nodemon)
+- After installation, cd into directory and run 'npm start'
+- On going to localhost:3007/, depending on whether the user has made an API call already, the user will either be redirected to /connect or /calendar-events
+- localhost:3007/connect will be connected to Google oAuth client, which will eventually redirect to /connect/callback to gain Authorization. Getting Authorization will set credentials to access token and refresh token based on CLIENT_ID and CLIENT_SECRET which are stored within .env file for security purposes.
+- After gaining access, a res.send will be sent to explicitly ask the user to navigate to /calendar-events
+- Navigating to /calendar-events will do the initial API call to the user's google calendar's events, which has the following parameters as default:
 {
- "status": 200,
- "query": {
-   "startDate": "2017-01-17T18:02:07.122Z",
-   "endDate": null,
- },
- "results": {
-   "events": [
-     {
-      "id": "aGNpNmswYjF0aHZnZXNicGNnbWlndWduNGsgamFzcGVyQGdvb2R0aW1lLmlv",
-      "status": "confirmed",
-      "created": "2017-01-11T18:02:07.122Z",
-      "updated": "2017-01-12T02:19:23.690Z",
-      "summary": "Debrief Session",
-      "description": "Secret meeting in the training docks.",
-      "location": string,
-      "creator": {
-        "id": "F0aHZnZXNicGNnbWlndWduNGsgamFzcGVyQGd",
-        "email": "bernard.lowe@delos.com",
-        "displayName": "Bernard Lowe",
-        "self": true
-      },
-      "organizer": {
-        "id": "F0aHZnZXNicGNnbWlndWduNGsgamFzcGVyQGd",
-        "email": "bernard.lowe@delos.com",
-        "displayName": "Bernard Lowe",
-        "self": true
-      },
-      "startDate": "2017-01-18T18:02:07.122Z"
-      "endDate": "2017-01-18T19:02:07.122Z"
-      "attendees": [
-        {
-          "id": "NnbWlndWduNGsgamFzcGVyQGdvb2R",
-          "email": "dolores@sweetwater.gov",
-          "displayName": "Dolores Abernathy",
-          "organizer": boolean,
-          "self": boolean,
-          "resource": boolean,
-          "optional": boolean,
-          "responseStatus": string,
-          "comment": string,
-          "additionalGuests": integer
-        }
-      ]
-    },
-    {
-     // ... additional events
-    }
-   ]
- }
+  calendarId: 'primary',
+  maxResults: 5,
+  singleEvents: true,
+  orderBy: 'startTime',
+  timeMin: req.query.startDate || new Date().toISOString(),
 }
-```
 
-## Running the Project
-1. Install node.js and npm
-2. CD into directory and run 'npm install'
-3. Run 'npm run start'
-4. Go to browser and navigate to http://localhost:3007/ for Hello World
+Note: if a startDate query is not given, the API call will assume the user wants the starting time of events to be listed based on the time the API is called. This can affect the API being requested as this will lead it to think that the user is wanting a new start time including the new amount of seconds, which is supported within the timeMin parameters.
+
+- During the API call, certain factors will be taken into consideration:
+  i.
+    Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
+  ii.
+    If there are events stored but the query endDate does not match that of the endDate value within storedQueryvalues or does not exist, an API call will be requested again with the criterion of the stored value of startDate. After doing the new API request, the new values will be stored with storedQueryvalues.
+  iii.
+    If there are events stored but the query startDate does not match that of the startDate value within storedQueryvalues or does not exist, an API call will be requested again with the query startDate or default of new Date().toISOString(). After doing the new API request, the new values will be stored with storedQueryvalues.
+
+Note:
+- by default, when the user redirects to /calendar-events within some browsers e.g. Chrome, a # will be appended to the end making it effectively a redirect to /calendar-events# . This seems to be a design choice of the google API call to prevent having sensitive auth data from one app accessible to another.
