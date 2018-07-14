@@ -13,7 +13,7 @@ Instructions:
   timeMin: req.query.startDate,
 }
 
-Note: if a startDate query is not given, the API call will assume the user wants the starting time of events to be listed based on the time the API is called. The default in this event will be new Date().toISOString().slice(0, 16)+':00.000Z'. The portion after the slice is so that the API is not called again within the same minute as seconds has an effect otherwise.
+Note: if a startDate query is not given, it will be assumed that the user wants the starting time of events to be listed based on the time the API is called. The default in this event will be new Date().toISOString().slice(0, 16)+':00.000Z'. The portion after the slice is so that the API is not called again within the same minute; otherwise another API call would be valid for the same results each second.
 
 - During the API call, certain factors will be taken into consideration:
 
