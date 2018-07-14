@@ -16,13 +16,16 @@ Instructions:
 Note: if a startDate query is not given, the API call will assume the user wants the starting time of events to be listed based on the time the API is called. This can affect the API being requested as this will lead it to think that the user is wanting a new start time including the new amount of seconds, which is supported within the timeMin parameters.
 
 - During the API call, certain factors will be taken into consideration:
-  i.
+
+i.
   
     Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
-  ii.
+    
+ ii.
   
     If there are events stored but the query endDate does not match that of the endDate value within storedQueryvalues or does not exist, an API call will be requested again with the criterion of the stored value of startDate. After doing the new API request, the new values will be stored with storedQueryvalues.
-  iii.
+  
+ iii.
   
     If there are events stored but the query startDate does not match that of the startDate value within storedQueryvalues or does not exist, an API call will be requested again with the query startDate or default of new Date().toISOString(). After doing the new API request, the new values will be stored with storedQueryvalues.
 
