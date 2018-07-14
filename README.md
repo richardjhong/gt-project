@@ -1,5 +1,12 @@
 Instructions:
-- npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), and nodemon (https://www.npmjs.com/package/nodemon)
+- npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), dotenv (https://www.npmjs.com/package/dotenv), and nodemon (https://www.npmjs.com/package/nodemon)
+- Create a file within root directory called .env and store a CLIENT_ID and CLIENT_SECRET provided by google apis when creating credentials. 
+  e.g. 
+  CLIENT_ID = "client id"
+  CLIENT_SECRET = "client secret"
+  
+  Dotenv will read these in line 1 within app.js
+  
 - After installation, cd into directory and run 'npm start'
 - On going to localhost:3007/, depending on whether the user has made an API call already, the user will either be redirected to /connect or /calendar-events
 - localhost:3007/connect will be connected to Google oAuth client, which will eventually redirect to /connect/callback to gain Authorization. Getting Authorization will set credentials to access token and refresh token based on CLIENT_ID and CLIENT_SECRET which are stored within .env file for security purposes.
@@ -16,12 +23,12 @@ Instructions:
 Note: if a startDate query is not given, the API call will assume the user wants the starting time of events to be listed based on the time the API is called. This can affect the API being requested as this will lead it to think that the user is wanting a new start time including the new amount of seconds, which is supported within the timeMin parameters.
 
 - During the API call, certain factors will be taken into consideration:
-  i.
-    Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
-  ii.
-    If there are events stored but the query endDate does not match that of the endDate value within storedQueryvalues or does not exist, an API call will be requested again with the criterion of the stored value of startDate. After doing the new API request, the new values will be stored with storedQueryvalues.
-  iii.
-    If there are events stored but the query startDate does not match that of the startDate value within storedQueryvalues or does not exist, an API call will be requested again with the query startDate or default of new Date().toISOString(). After doing the new API request, the new values will be stored with storedQueryvalues.
+
+i.  Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
+    
+ ii.  If there are events stored but the query endDate does not match that of the endDate value within storedQueryvalues or does not exist, an API call will be requested again with the criterion of the stored value of startDate. After doing the new API request, the new values will be stored with storedQueryvalues.
+  
+ iii. If there are events stored but the query startDate does not match that of the startDate value within storedQueryvalues or does not exist, an API call will be requested again with the query startDate or default of new Date().toISOString(). After doing the new API request, the new values will be stored with storedQueryvalues.
 
 Note:
 - by default, when the user redirects to /calendar-events within some browsers e.g. Chrome, a # will be appended to the end making it effectively a redirect to /calendar-events# . This seems to be a design choice of the google API call to prevent having sensitive auth data from one app accessible to another.
