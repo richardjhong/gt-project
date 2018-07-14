@@ -1,5 +1,12 @@
 Instructions:
-- npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), and nodemon (https://www.npmjs.com/package/nodemon)
+- npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), dotenv (https://www.npmjs.com/package/dotenv), and nodemon (https://www.npmjs.com/package/nodemon)
+- Create a file within root directory called .env and store a CLIENT_ID and CLIENT_SECRET provided by google apis when creating credentials. 
+  e.g. 
+  CLIENT_ID = "client id"
+  CLIENT_SECRET = "client secret"
+  
+  Dotenv will read these in line 1 within app.js
+  
 - After installation, cd into directory and run 'npm start'
 - On going to localhost:3007/, depending on whether the user has made an API call already, the user will either be redirected to /connect or /calendar-events
 - localhost:3007/connect will be connected to Google oAuth client, which will eventually redirect to /connect/callback to gain Authorization. Getting Authorization will set credentials to access token and refresh token based on CLIENT_ID and CLIENT_SECRET which are stored within .env file for security purposes.
