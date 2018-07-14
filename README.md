@@ -3,7 +3,7 @@ Instructions:
 - After installation, cd into directory and run 'npm start'
 - On going to localhost:3007/, depending on whether the user has made an API call already, the user will either be redirected to /connect or /calendar-events based on lines 109-133 within app.js
 - localhost:3007/connect will be connected to Google oAuth client, which will eventually redirect to /connect/callback to gain Authorization. Getting Authorization will set credentials to access token and refresh token based on CLIENT_ID and CLIENT_SECRET which are stored within .env file for security purposes.
-- After gaining access, a res.send will be sent to explicitly ask the user to navigate to /calendar-events
+- After gaining access, user will be redirected to /calender-events
 - Navigating to /calendar-events will do the initial API call to the user's google calendar's events, which has the following parameters as default:
 {
   calendarId: 'primary',
@@ -25,3 +25,5 @@ i.  Have the events from an API call have already been stored? For the first tim
 
 Note:
 - by default, when the user redirects to /calendar-events within some browsers e.g. Chrome, a # will be appended to the end making it effectively a redirect to /calendar-events# . This seems to be a design choice of the google API call to prevent having sensitive auth data from one app accessible to another.
+
+- lines 85 and 103 are just for visual effect to see the startTime be reflective of real time of when the user requests going to the same calendar-events. The stored cache object of storedEvents is the same in all other regards.

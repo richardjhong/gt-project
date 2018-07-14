@@ -41,6 +41,9 @@ app.get('/connect/callback', function(req, res) {
 })
 
 app.get('/calendar-events', function (req, res2) {
+  if (Object.keys(googleAuth.credentials).length === 0) {
+    res2.redirect('/connect')
+  }
   //console.log('line 45 ', req.query.startDate, req.query.endDate)
   myCache.mget(['storedQueryvalues', 'storedEvents'], (err, value) => {
     if (!err) {
@@ -72,13 +75,14 @@ app.get('/calendar-events', function (req, res2) {
             resultObj['query']['endDate'] = req.query.endDate
             myCache.set('storedQueryvalues', { startDate: req.query.startDate, endDate: req.query.endDate })
           } else {
-            myCache.set('storedQueryvalues', { startDate: criterion.timeMin })
+            myCache.set('storedQueryvalues', { startDate: req.query.startDate })
           }
 
           calendar.events.list({ ...criterion }, (err, res) => {
             if (err) return console.log('The API returned an error: ' + err);
             const events = res.items;
             resultObj['events'] = events
+            resultObj['query']['startDate'] = new Date().toLocaleString()
 
             myCache.set('storedEvents', resultObj, function(err, success) {
               if (!err && success) {
@@ -96,6 +100,7 @@ app.get('/calendar-events', function (req, res2) {
         .then(result => res2.send(result))
       } else {
         console.log('No need to do another api call, retrieving stored events')
+        value.storedEvents.query.startDate = new Date().toLocaleString()
         res2.send(value.storedEvents)
       }
     } else {
