@@ -34,8 +34,8 @@ app.get('/connect/callback', function(req, res) {
     } else {
       googleAuth.setCredentials(tokens)
       // console.log('tokens: ', tokens)
-      //res.redirect('../../calendar-events')
-    res.send('Authenticated; navigate to /calendar-events now!')
+      res.redirect('../../calendar-events')
+    //res.send('Authenticated; navigate to /calendar-events now!')
     }
   })
 })
