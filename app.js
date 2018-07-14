@@ -106,9 +106,10 @@ app.get('/calendar-events', function (req, res2) {
 app.get('/', function (req, res) {
    if (Object.keys(googleAuth.credentials).length === 0) {
      res.redirect('/connect')
+   } else {
+     res.redirect('/calendar-events')
    }
-   res.redirect('/calendar-events')
-   // res.send('Hello world!')
+   //res.send('Hello world!!')
 });
 
 app.listen(3007, function () {
