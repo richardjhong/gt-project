@@ -7,7 +7,6 @@ const NodeCache = require( "node-cache" );
 const OAuth2 = google.auth.OAuth2;
 const myCache = new NodeCache();
 
-
 const googleAuth = new OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
