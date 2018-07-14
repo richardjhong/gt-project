@@ -10,7 +10,7 @@ const myCache = new NodeCache();
 const googleAuth = new OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  'http://localhost:3007/connect/callback',
+  process.env.DOMAIN + '/connect/callback',
 )
 
 const GOOGLE_SCOPE = [
@@ -45,8 +45,11 @@ app.get('/calendar-events', function (req, res2) {
   myCache.mget(['storedQueryvalues', 'storedEvents'], (err, value) => {
     if (!err) {
       //console.log('line 48 is being read: ', value)
+      if (!req.query.startDate) {
+        req.query.startDate = new Date().toISOString().slice(0, 16)+':00.000Z'
+      }
       if (value.storedEvents === undefined || (req.query.startDate && req.query.startDate !== value.storedQueryvalues.startDate) ||
-      (req.query.endDate && req.query.endDate !== value.storedQueryvalues.endDate) || (value.storedQueryvalues.endDate && !req.query.endDate) || !req.query.startDate) {
+      (req.query.endDate && req.query.endDate !== value.storedQueryvalues.endDate) || (value.storedQueryvalues.endDate && !req.query.endDate)) {
         const grabEventList = new Promise(resolve => {
           const calendar = google.calendar({ version: 'v3', auth: googleAuth })
           let criterion = { // object passed along into line 83
@@ -54,7 +57,7 @@ app.get('/calendar-events', function (req, res2) {
             maxResults: 5,
             singleEvents: true,
             orderBy: 'startTime',
-            timeMin: req.query.startDate || new Date().toISOString(),
+            timeMin: req.query.startDate,
           }
 
           let resultObj = { // JSON to be sent eventually with added information that is not necessary in line 83
