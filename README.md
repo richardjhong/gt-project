@@ -17,9 +17,7 @@ Note: if a startDate query is not given, the API call will assume the user wants
 
 - During the API call, certain factors will be taken into consideration:
 
-i.
-  
-    Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
+i. Have the events from an API call have already been stored? For the first time it is called, there are no stored events so it knows to go ahead and continue with the API call, res.send the results, and then store these events within the cache as an object called storedEvents. In addition, the parameters in which this initial API call was made will be stored within the cache in an object called storedQueryvalues.
     
  ii.
   
