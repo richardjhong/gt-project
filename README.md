@@ -2,8 +2,9 @@ Instructions:
 - npm install: involves included express, adds googleapis (https://www.npmjs.com/package/googleapis), node-cache (https://www.npmjs.com/package/node-cache), dotenv (https://www.npmjs.com/package/dotenv), and nodemon (https://www.npmjs.com/package/nodemon)
 - After installation, cd into directory and run 'npm start'
 - On going to localhost:3007/, depending on whether the user has made an API call already, the user will either be redirected to /connect or /calendar-events based on lines 109-133 within app.js
+- Create an .env file with a CLIENT_ID, CLIENT_SECRET, and DOMAIN set to 'http://localhost:3007'
 - localhost:3007/connect will be connected to Google oAuth client, which will eventually redirect to /connect/callback to gain Authorization. Getting Authorization will set credentials to access token and refresh token based on CLIENT_ID and CLIENT_SECRET which are stored within .env file
-- After gaining access, user will be redirected to /calender-events
+- After gaining access, user will be redirected to /calendar-events
 - Navigating to /calendar-events will do the initial API call to the user's google calendar's events, which has the following parameters as default:
 {
   calendarId: 'primary',
